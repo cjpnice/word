@@ -8,10 +8,13 @@ import VueResource from 'vue-resource'
 import 'mint-ui/lib/style.css'
 import './lib/mui/css/mui.min.css'
 import './lib/mui/css/icons-extra.css'
-
+import axios from 'axios';
+Vue.prototype.$axios = axios;
+axios.defaults.baseURL = '/api'
 Vue.config.productionTip = false
 Vue.use(MintUI)
 Vue.use(VueResource)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -6,7 +6,7 @@
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>   
-    <router-view></router-view>
+    <router-view @setIsLogin="setIsLoginToTrue"></router-view>
     <mt-tabbar v-model="selected">
 
   <mt-tab-item id="背单词" >
@@ -26,43 +26,58 @@
 </template>
 
 <script>
+import Router from 'vue-router'
+/**
+ * 重写路由的push方法,解决两次跳转相同路由报错的问题
+ */
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 export default {
   name: 'App',
   
   data(){
     return {
         selected: "背单词",
+        isLogin: false
  
     }
   },
   methods: {
       back(){
         this.selected="背单词"
+      },
+      setIsLoginToTrue(msg){
+        this.isLogin=true
       }
   },
   watch:{
       selected:function(newVal,oldVal){
           if(this.selected=="背单词"){
-            this.$router.replace('/reciteWords')
+            if(this.isLogin)
+              this.$router.push('/reciteWords')
+            else
+              this.$router.push('/')
           }else if(this.selected=="生词本"){
-            this.$router.replace('/newWords')
+            if(this.isLogin)
+              this.$router.push('/newWords')
+            else
+              this.$router.push('/')
           }else{
-            this.$router.replace('/personal')
+            if(this.isLogin)
+              this.$router.push('/personal')
+            else
+              this.$router.push('/')
           }
-      },
-      
+      },  
   }
 }
 </script>
 
 <style scoped>
-body{
-  margin: 0;
-}
-.app-container{
-  padding-top: 40px;
-  overflow-x: hidden;
-}
+
+
 .mint-header{
   background-color:#FAFAFA;
   color:black;
