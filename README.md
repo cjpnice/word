@@ -9,3 +9,9 @@
 
 ## 后台代码
 [GitHub](https://github.com/cjpnice/Word_vue)
+
+## 使用方法
+- 使用git克隆到本地，进入项目目录，运行`npm istall`
+- 如果缺少依赖，按照提示安装即可
+- 使用`npm run dev`运行程序
+- 需要结合后台获取数据，在config文件夹中的index.js中修改proxyTable的后台地址
