@@ -39,28 +39,36 @@ export default {
 	},
 	methods: {
 		login(){
-			let postData = qs.stringify({
+			if(this.username!=''&&this.password!=''){
+				let postData = qs.stringify({
 				username: this.username,
 				password: this.password
-			})
-			Indicator.open('加载中...');
-			this.$axios.post("/user/login",postData)//传参
-			.then((res)=>{
-				if(res.data.status==0){
-					Indicator.close();
-					this.$router.replace('/reciteWords')
-					this.$emit('setIsLogin',res.data.data.username)				
-				}else{
-					Indicator.close();
-					Toast({
-						position:'bottom',
-						message:'用户名密码错误'
-					});
-				}         
-			})
-			.catch((err)=>{
-				console.log(err)
-			});
+				})
+				Indicator.open('加载中...');
+				this.$axios.post("/user/login",postData)//传参
+				.then((res)=>{
+					if(res.data.status==0){
+						Indicator.close();
+						this.$router.replace('/reciteWords')
+						this.$emit('setIsLogin',res.data.data.username)				
+					}else{
+						Indicator.close();
+						Toast({
+							position:'bottom',
+							message:'用户名密码错误'
+						});
+					}         
+				})
+				.catch((err)=>{
+					console.log(err)
+				});
+			}else{
+				Toast({
+					position:'bottom',
+					message:'请输入用户名密码'
+				});
+			}
+			
 
 			
 		}
