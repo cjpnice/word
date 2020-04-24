@@ -38,7 +38,7 @@
 					忘记
 		</button>
     </div>
-                
+    <mt-button size="large" type="primary" @click.native="startReciteWord">开始学习</mt-button>            
   </div>
 </template>
 

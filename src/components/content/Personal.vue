@@ -11,22 +11,38 @@
 					</a>
 				</li>
 			</ul>
-      <div class="mui-card" style="margin-bottom: 35px;">
+      	<div class="mui-card" style="margin-bottom: 35px;">
 				<ul class="mui-table-view">
 					<li class="mui-table-view-cell">
 						<a class="mui-navigate-right">
 							导出数据
 						</a>
 					</li>
-
 				</ul>
-			</div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<router-link class="mui-navigate-right" to="/reviewSetting">
+							复习设置
+						</router-link>
+					</li>
+				</ul>
+		</div>
+		<mt-button size="large" type="danger" @click.native="logOut">退出登陆</mt-button>
   </div>
 </template>
 
 <script>
 export default {
+	data(){
+		return{
 
+		}
+	},
+	methods: {
+		logOut(){
+			this.$router.push('/login')
+		}
+	}
 }
 </script>
 

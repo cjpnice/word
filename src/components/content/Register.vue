@@ -1,6 +1,6 @@
 <template>
   <div>
-      		<header class="mui-bar mui-bar-nav">
+		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">注册</h1>
 		</header>
@@ -63,7 +63,7 @@ export default {
 							Indicator.close();
 							Toast({
 								position:'bottom',
-								message:'注册失败'
+								message: res.data.msg
 							});
 						}         
 					})

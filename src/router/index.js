@@ -6,6 +6,7 @@ import NewWords from "@/components/content/NewWords.vue"
 import Login from "@/components/content/Login.vue"
 import Register from "@/components/content/Register.vue"
 import ForgetPassword from "@/components/content/ForgetPassword.vue"
+import ReviewSetting from "@/components/personal/ReviewSetting.vue"
 Vue.use(Router)
 
 export default new Router({
@@ -17,5 +18,6 @@ export default new Router({
     {path: '/login',component: Login},
     {path: '/register',component: Register},
     {path: '/forgetPassword',component: ForgetPassword},
+    {path: '/reviewSetting',component: ReviewSetting},
   ]
 })
