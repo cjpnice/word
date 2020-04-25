@@ -35,6 +35,7 @@ export default {
 		return{
 			username:'',
 			password:'',	
+			userToken:''
 		}
 	},
 	methods: {
@@ -49,8 +50,11 @@ export default {
 				.then((res)=>{
 					if(res.data.status==0){
 						Indicator.close();
-						this.$router.replace('/reciteWords')
-						this.$emit('setIsLogin',res.data.data.username)				
+						//存储token			
+						this.userToken = res.data.data
+						localStorage.setItem('userToken', this.userToken);
+						this.$store.commit('set_token', this.userToken)
+						this.$router.replace('/reciteWords')		
 					}else{
 						Indicator.close();
 						Toast({

@@ -35,12 +35,12 @@
 export default {
 	data(){
 		return{
-
 		}
 	},
 	methods: {
 		logOut(){
 			this.$router.push('/login')
+			localStorage.removeItem('userToken')
 		}
 	}
 }

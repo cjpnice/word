@@ -6,7 +6,7 @@
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>   
-    <router-view @setIsLogin="setIsLoginToTrue"></router-view>
+    <router-view></router-view>
     <mt-tabbar v-model="selected">
 
   <mt-tab-item id="背单词" >
@@ -40,35 +40,22 @@ export default {
   data(){
     return {
         selected: "背单词",
-        isLogin: false
- 
     }
   },
   methods: {
       back(){
         this.selected="背单词"
       },
-      setIsLoginToTrue(msg){
-        this.isLogin=true
-      }
+     
   },
   watch:{
       selected:function(newVal,oldVal){
           if(this.selected=="背单词"){
-            if(this.isLogin)
               this.$router.push('/reciteWords')
-            else
-              this.$router.push('/')
           }else if(this.selected=="生词本"){
-            if(this.isLogin)
               this.$router.push('/newWords')
-            else
-              this.$router.push('/')
           }else{
-            if(this.isLogin)
               this.$router.push('/personal')
-            else
-              this.$router.push('/')
           }
       },  
   }
