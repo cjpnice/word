@@ -38,27 +38,24 @@
 					忘记
 		</button>
     </div>
-    <mt-button size="large" type="primary" @click.native="startReciteWord">开始学习</mt-button>            
+    <mt-button class="buttom" size="large" type="primary" @click.native="startReciteWord">开始学习</mt-button>            
   </div>
 </template>
 
 <script>
 import { Toast } from 'mint-ui';
-
+import qs from 'qs'
 export default {
     data(){
         return{
-            word:"necessary",
-            translation:"必要",
+            word:"word",
+            translation:"单词",
             phonogram:"音标",
             display: false,
             showMore: false,
             datas:{},
             index:0
         }
-    },
-     created(){
-        this.getInfo();      
     },
     methods: {
         showTranslation(){
@@ -68,19 +65,26 @@ export default {
                 this.display=false;
             }
         },
-        getInfo(){
-            // this.$http.get('http://localhost:8081/word/word/selectWord?input_unit=1').then(function(result){
-            //     this.datas=result.data
-            //     console.log(this.datas)
-            // },function(err){
-            //     console.log("sd")
-            // })
+        startReciteWord(){
+            let postData = qs.stringify({
+				userId: localStorage.getItem("userId"),
+				wordNum: localStorage.getItem("wordNum")
+                })
+            this.$axios.post("/word/getWord",postData)
+            .then((res)=>{
+                this.datas = res.data.data
+                console.log(this.datas[0].word)
+            })
+            .catch((err)=>{
+				console.log(err)
+			});
         },
         master(){
             this.showMore=false
             if(this.index<this.datas.length){
                 this.word=this.datas[this.index].word
-                this.translation=this.datas[this.index].translate
+                this.translation=this.datas[this.index].translation
+                this.phonogram=this.datas[this.index].phonogram
                 this.index++
             }else{
                 Toast({
@@ -93,7 +97,8 @@ export default {
             this.showMore=false
             if(this.index<this.datas.length){
                 this.word=this.datas[this.index].word
-                this.translation=this.datas[this.index].translate
+                this.translation=this.datas[this.index].translation
+                this.phonogram=this.datas[this.index].phonogram
                 this.index++
             }else{
                 Toast({
@@ -106,7 +111,8 @@ export default {
             this.showMore=false
             if(this.index<this.datas.length){
                 this.word=this.datas[this.index].word
-                this.translation=this.datas[this.index].translate
+                this.translation=this.datas[this.index].translation
+                this.phonogram=this.datas[this.index].phonogram
                 this.index++
             }else{
                 Toast({
@@ -134,6 +140,15 @@ export default {
     position:fixed ; 
     bottom:0px;
     padding-bottom: 55px;
+}
+
+.buttom{
+    width: 100%;
+    margin-top: 100px;
+    text-align:center;
+    position:fixed ; 
+    bottom:0px;
+    margin-bottom: 130px;
 }
 
 </style>

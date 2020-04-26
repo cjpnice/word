@@ -16,14 +16,35 @@
             </div>
         </div>
     </div>
+    <mt-button size="large" type="primary" @click.native="save">保存</mt-button>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
 export default {
     data(){
         return{
             wordNum:0
+        }
+    },
+    created(){
+        this.wordNum = localStorage.getItem("wordNum")
+    },
+    methods:{
+        save(){
+            console.log(this.wordNum)
+            let postData = qs.stringify({
+				wordNum: this.wordNum,
+				userId: 1
+                })
+            this.$axios.post("/user/setWordNum",postData)
+            .then((res)=>{
+                localStorage.setItem('wordNum', this.wordNum);
+            })
+            .catch((err)=>{
+				console.log(err)
+			});
         }
     }
 }

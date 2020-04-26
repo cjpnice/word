@@ -57,7 +57,11 @@ export default {
           }else{
               this.$router.push('/personal')
           }
-      },  
+      }, 
+      $route(to,from){
+        if(to.path=='/reciteWords')
+          this.selected="背单词"
+      }
   }
 }
 </script>

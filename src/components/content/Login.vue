@@ -35,7 +35,7 @@ export default {
 		return{
 			username:'',
 			password:'',	
-			userToken:''
+
 		}
 	},
 	methods: {
@@ -50,10 +50,14 @@ export default {
 				.then((res)=>{
 					if(res.data.status==0){
 						Indicator.close();
+						console.log(res.data.data)
+						//保存用户信息
+						localStorage.setItem('wordNum', res.data.data.wordNum);
+						localStorage.setItem('todayIsRecite',res.data.data.todayIsRecite)
+						localStorage.setItem('userId',res.data.data.userId)
 						//存储token			
-						this.userToken = res.data.data
-						localStorage.setItem('userToken', this.userToken);
-						this.$store.commit('set_token', this.userToken)
+						localStorage.setItem('userToken', res.data.msg);
+						this.$store.commit('set_token', res.data.msg)
 						this.$router.replace('/reciteWords')		
 					}else{
 						Indicator.close();
