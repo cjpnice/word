@@ -50,15 +50,15 @@ export default {
 				.then((res)=>{
 					if(res.data.status==0){
 						Indicator.close();
-						console.log(res.data.data)
 						//保存用户信息
+						localStorage.setItem("userName",res.data.data.username)
 						localStorage.setItem('wordNum', res.data.data.wordNum);
 						localStorage.setItem('todayIsRecite',res.data.data.todayIsRecite)
 						localStorage.setItem('userId',res.data.data.userId)
 						//存储token			
 						localStorage.setItem('userToken', res.data.msg);
 						this.$store.commit('set_token', res.data.msg)
-						this.$router.replace('/reciteWords')		
+						this.$router.push('/reciteWords')		
 					}else{
 						Indicator.close();
 						Toast({

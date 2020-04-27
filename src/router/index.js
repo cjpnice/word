@@ -11,7 +11,7 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
-    {path:'/',redirect:'/login'},
+    {path:'/',redirect:'/reciteWords'},
     {path: '/reciteWords',component: ReciteWords},
     {path: '/newWords',component: NewWords},
     {path: '/personal',component: Personal},
@@ -24,6 +24,7 @@ const router = new Router({
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
+  //除了登陆，注册，忘记密码不需要登陆，其他界面必须登陆后才能进入
   if (to.path === '/login'||to.path === '/register'||to.path === '/forgetPassword') {
     next();
   } else {

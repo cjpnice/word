@@ -44,9 +44,8 @@ export default {
   },
   methods: {
       back(){
-        this.selected="背单词"
+        this.$router.go(-1);//返回上一层
       },
-     
   },
   watch:{
       selected:function(newVal,oldVal){

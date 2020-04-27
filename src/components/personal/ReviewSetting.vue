@@ -22,6 +22,7 @@
 
 <script>
 import qs from 'qs'
+import { Toast } from 'mint-ui';
 export default {
     data(){
         return{
@@ -33,18 +34,25 @@ export default {
     },
     methods:{
         save(){
-            console.log(this.wordNum)
-            let postData = qs.stringify({
-				wordNum: this.wordNum,
-				userId: 1
+            if(localStorage.getItem("start")=="false"||localStorage.getItem("start")==null){
+                let postData = qs.stringify({
+                    wordNum: this.wordNum,
+                    userId: localStorage.getItem("userId")
+                    })
+                this.$axios.post("/user/setWordNum",postData)
+                .then((res)=>{
+                    localStorage.setItem('wordNum', this.wordNum);
                 })
-            this.$axios.post("/user/setWordNum",postData)
-            .then((res)=>{
-                localStorage.setItem('wordNum', this.wordNum);
-            })
-            .catch((err)=>{
-				console.log(err)
-			});
+                .catch((err)=>{
+                    console.log(err)
+                });
+            }else{
+                Toast({
+                    position:'bottom',
+                    message:'背完在修改吧'
+                });
+            }
+            
         }
     }
 }

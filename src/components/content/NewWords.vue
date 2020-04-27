@@ -11,24 +11,67 @@
 			</div>
 	  	</form>
         <div class="mui-card">
-			<ul class="mui-table-view">
+			
+			<ul class="newsList mui-table-view">
 				<li class="mui-table-view-divider">点击为忘记的单词，按点击数排序，右侧为点击次数</li>
-				<li class="mui-table-view-cell">disguise<span class="mui-badge mui-badge-primary">14</span></li>
-				<li class="mui-table-view-cell">stalk <span class="mui-badge mui-badge-success">1</span></li>
-				<li class="mui-table-view-cell">necessary <span class="mui-badge">5</span></li>   
+				<li class="mui-table-view-cell" v-for="(item) in forgetWordList" :key="item.id" disguise>
+					{{item.word}}
+					<h5 style="padding-right:40px">{{item.translation}}</h5>
+					<span class="mui-badge mui-badge-primary">{{item.forgetTime}}</span>
+				</li>		
+				
 			</ul>
 		</div>
-		
-        
+
+
+       
   </div>
 </template>
 
 <script>
+import qs from 'qs'
+import { Indicator } from 'mint-ui';
+import { Toast } from 'mint-ui';
+import { InfiniteScroll } from 'mint-ui';
 export default {
+	data(){
+		return{
+			forgetWordList:{},
 
+
+		}
+	},
+	methods:{
+		
+	},
+	created(){
+		let postData = qs.stringify({
+		userId: localStorage.getItem("userId"),
+		})
+		this.$axios.post("/word/getForgetWord",postData)
+		.then((res)=>{
+			//获取单词列表
+			this.forgetWordList = res.data.data
+			if(this.forgetWordList.length == 0){
+				Toast({
+					position:'bottom',
+					message:'没有生词'
+				});
+			}else{
+				localStorage.setItem("forgetWordList",JSON.stringify(this.forgetWordList))	
+			}
+			
+		})
+		.catch((err)=>{
+			console.log(err)
+		});
+	}
 }
 </script>
 
-<style>
-
+<style scoped>
+.newsList{
+	max-height: 60vh;
+	overflow-y: auto;
+}
 </style>
