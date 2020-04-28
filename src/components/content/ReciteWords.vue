@@ -1,12 +1,13 @@
 <template>
   <div >
 <mt-progress :value="progress">
-  <div slot="end">{{wordNum-index}}</div>
+  <div slot="end">{{wordNum-index-1}}</div>
 </mt-progress>
     <div class="mui-card">
-        <div class="mui-card-header mui-card-media" style="height:40vw;background-image:url(https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200414083119.jpg)"></div>
+        <div class="mui-card-header mui-card-media" style="height:30vw;background-image:url(https://api.fczbl.vip/bing/)"></div>
         <div class="mui-card-content" @click="showTranslation">
             <div class="mui-card-content-inner">
+                <audio :src="audio" controls="controls"></audio>
                 <p>点击单词以显示单词意思</p>
                 <p style="color: #333;">
                     <center>
@@ -25,7 +26,7 @@
     <div class="mui-card" v-show=showMore>
         <div class="mui-card-content">
             <div class="mui-card-content-inner">
-                这里用来展示单词例句
+                {{exampleSentence}}
             </div>
         </div>
     </div>
@@ -55,29 +56,32 @@ export default {
             word:"word",
             translation:"单词",
             phonogram:"音标",
+            exampleSentence:'',
             display: false,
             showMore: false,
             datas:{},
             index:0,
             start:"false",
             wordNum:0,
+            audio:""
         }
     },
     created() {
+        this.wordNum = Number(localStorage.getItem("wordNum"))
         if(localStorage.getItem("start")=="true"&&Number(localStorage.getItem("index"))<Number(localStorage.getItem("wordNum"))){
             this.datas = JSON.parse(localStorage.getItem("datas"))
             this.index = localStorage.getItem("index")==null? 0 : Number(localStorage.getItem("index"))
-            this.start = localStorage.getItem("start")==null? false : localStorage.getItem("start")
-            this.wordNum = localStorage.getItem("wordNum")
+            this.start = localStorage.getItem("start")==null? "false" : localStorage.getItem("start") 
             this.word=this.datas[this.index].word
             this.translation=this.datas[this.index].translation
             this.phonogram=this.datas[this.index].phonogram
-            this.index++
+            this.exampleSentence=this.datas[this.index].exampleSentence
+            this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
         }
     },
     computed:{
         'progress':function(){
-            return this.index/this.wordNum*100
+            return (this.index+1)/this.wordNum*100
         }
     },
     methods: {
@@ -89,7 +93,7 @@ export default {
             }
         },
         startReciteWord(){
-            if(this.start=="false"&&localStorage.getItem("todayIsRecite")==0){
+            if(this.start=="false"&&Number(localStorage.getItem("todayIsRecite"))==0){
                 this.wordNum = localStorage.getItem("wordNum")
                 let postData = qs.stringify({
                     userId: localStorage.getItem("userId"),
@@ -111,7 +115,8 @@ export default {
                         this.word=this.datas[this.index].word
                         this.translation=this.datas[this.index].translation
                         this.phonogram=this.datas[this.index].phonogram
-                        this.index++
+                        this.exampleSentence=this.datas[this.index].exampleSentence
+                        this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
                     }
                     
                 })
@@ -119,14 +124,18 @@ export default {
                     console.log(err)
                 });
             }else{
-                if(localStorage.getItem("todayIsRecite")==1){
+                if(Number(localStorage.getItem("todayIsRecite"))==1){
                     MessageBox({
                         title: '提示',
                         message: '你今天已经背过了，你要继续背吗？',
                         showCancelButton: true
                     }).then(action => {
-                        localStorage.setItem("todayIsRecite",0)
-                        localStorage.setItem("index",0)
+                        if(action=="confirm"){
+                            localStorage.setItem("todayIsRecite",0)
+                            localStorage.setItem("index",0)
+                            this.start="false"
+                            this.index=0
+                        }      
                     });
                 }else{
                     Toast({
@@ -139,49 +148,45 @@ export default {
             
         },
         master(){ 
-            if(this.start=="true"&&localStorage.getItem("todayIsRecite")==0){
+
+            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){
                 this.showMore=false
                 this.display=false
                 if(this.index<this.datas.length){
                     let postData = qs.stringify({
-                    id: this.datas[this.index-1].id,
+                    id: this.datas[this.index].id,
                     userId: localStorage.getItem("userId")
                     })
                     this.$axios.post("/word/setIsRemember",postData)
                     .then((res)=>{
-                        this.word=this.datas[this.index].word
-                        this.translation=this.datas[this.index].translation
-                        this.phonogram=this.datas[this.index].phonogram
                         this.index++
-                        localStorage.setItem("index",this.index)
+                        //没有背完
+                        if(this.index!=this.datas.length){
+                            this.word=this.datas[this.index].word
+                            this.translation=this.datas[this.index].translation
+                            this.phonogram=this.datas[this.index].phonogram
+                            this.exampleSentence=this.datas[this.index].exampleSentence
+                            this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
+                            localStorage.setItem("index",this.index)
+                        }else{
+                            //背完了
+                            this.index--
+                            Toast({
+                                position:'bottom',
+                                message:'背完啦'
+                            });
+                            let postData1 = qs.stringify({
+                                userId: localStorage.getItem("userId")
+                            })
+                            this.$axios.post("/user/setTodayIsRecite",postData1)
+                            .then((res)=>{
+                                localStorage.setItem("todayIsRecite",1)
+                            })
+                        }    
                     })
                     .catch((err)=>{
                         console.log(err)
-                    });
-                    
-                }else{
-                    if(this.index==this.wordNum){
-                        let postData = qs.stringify({
-                        id: this.datas[this.index-1].id,
-                        userId: localStorage.getItem("userId")
-                        })
-                        this.$axios.post("/word/setIsRemember",postData)
-                        .then((res)=>{
-                            localStorage.setItem("todayIsRecite",1)
-                        })
-                        let postData1 = qs.stringify({
-                        userId: localStorage.getItem("userId")
-                        })
-                        this.$axios.post("/user/setTodayIsRecite",postData1)
-                        .then((res)=>{
-                            
-                        })
-                    }
-                    Toast({
-                        position:'bottom',
-                        message:'背完啦'
-                    });
-                 
+                    });       
                 }
             }else{
                 if(localStorage.getItem("todayIsRecite")==1){
@@ -199,52 +204,47 @@ export default {
         },
 
         forget(){
-            if(this.start=="true"&&localStorage.getItem("todayIsRecite")==0){
+            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){
                 this.showMore=false
                 this.display=false
                 if(this.index<this.datas.length){
                     let postData = qs.stringify({
-                    id: this.datas[this.index-1].id,
+                    id: this.datas[this.index].id,
                     userId: localStorage.getItem("userId")
                     })
                     this.$axios.post("/word/setForgetTime",postData)
                     .then((res)=>{
-                        this.word=this.datas[this.index].word
-                        this.translation=this.datas[this.index].translation
-                        this.phonogram=this.datas[this.index].phonogram
                         this.index++
-                        localStorage.setItem("index",this.index)
+                        if(this.index!=this.wordNum){
+                            this.word=this.datas[this.index].word
+                            this.translation=this.datas[this.index].translation
+                            this.phonogram=this.datas[this.index].phonogram
+                            this.exampleSentence=this.datas[this.index].exampleSentence
+                            this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
+                            localStorage.setItem("index",this.index)
+                        }else{
+                            this.index--
+                            Toast({
+                                position:'bottom',
+                                message:'背完啦'
+                            });
+                            let postData1 = qs.stringify({
+                                userId: localStorage.getItem("userId")
+                            })
+                            this.$axios.post("/user/setTodayIsRecite",postData1)
+                            .then((res)=>{
+                                localStorage.setItem("todayIsRecite",1)
+                            })
+                        }
+                        
                     })
                     .catch((err)=>{
                         console.log(err)
                     });
                     
-                }else{
-                    if(this.index==this.wordNum){
-                        let postData = qs.stringify({
-                        id: this.datas[this.index-1].id,
-                        userId: localStorage.getItem("userId")
-                        })
-                        this.$axios.post("/word/setForgetTime",postData)
-                        .then((res)=>{
-                            localStorage.setItem("todayIsRecite",1)
-                        })
-
-                        let postData1 = qs.stringify({
-                        userId: localStorage.getItem("userId")
-                        })
-                        this.$axios.post("/user/setTodayIsRecite",postData1)
-                        .then((res)=>{
-                            
-                        })
-                    }
-                    Toast({
-                        position:'bottom',
-                        message:'背完啦'
-                    });
                 }
             }else{
-                if(localStorage.getItem("todayIsRecite")==1){
+                if(Number(localStorage.getItem("todayIsRecite"))==1){
                     Toast({
                         position:'bottom',
                         message:'你今天已经背过了'
