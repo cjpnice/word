@@ -3,9 +3,13 @@
 ## 前端使用的是Vue,结合MintUi和MUI，后台暂时使用的是Spring，今后打算改为SpringBoot
 - 暂时的效果
 
-![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200422171843.png)
-![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200422171906.png)
-![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200422171936.png)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200430163154.png)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200430163215.png)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200430163340.png)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200424154252.jpg)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200424154251.jpg)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200424154250.jpg)
+![](https://cjpnice-picture.oss-cn-hangzhou.aliyuncs.com/img/20200430163422.png)
 
 ## 后台代码
 [GitHub](https://github.com/cjpnice/Word_vue)
