@@ -1,13 +1,14 @@
 <template>
   <div >
 <mt-progress :value="progress">
-  <div slot="end">{{wordNum-index-1}}</div>
+    <div slot="start" style="font-size:12px">剩余单词量</div>
+    <div slot="end">{{wordNum-index-1}}</div>
 </mt-progress>
     <div class="mui-card">
         <div class="mui-card-header mui-card-media" style="height:30vw;background-image:url(https://api.fczbl.vip/bing/)"></div>
         <div class="mui-card-content" @click="showTranslation">
             <div class="mui-card-content-inner">
-                <audio :src="audio" controls="controls"></audio>
+                <center><audio :src="audio" controls="controls" autoplay="autoplay"></audio></center>
                 <p>点击单词以显示单词意思</p>
                 <p style="color: #333;">
                     <center>
@@ -142,15 +143,11 @@ export default {
                         position:'bottom',
                         message:'你已经点击过了'
                     });
-                }
-                
+                }   
             }
-            
         },
         master(){ 
-
-            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){
-                this.showMore=false
+            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){       
                 this.display=false
                 if(this.index<this.datas.length){
                     let postData = qs.stringify({
@@ -168,6 +165,9 @@ export default {
                             this.exampleSentence=this.datas[this.index].exampleSentence
                             this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
                             localStorage.setItem("index",this.index)
+                            this.$axios.post("/word/setReciteTime",postData)
+                            .then((res)=>{
+                            })
                         }else{
                             //背完了
                             this.index--
@@ -175,13 +175,14 @@ export default {
                                 position:'bottom',
                                 message:'背完啦'
                             });
-                            let postData1 = qs.stringify({
-                                userId: localStorage.getItem("userId")
-                            })
-                            this.$axios.post("/user/setTodayIsRecite",postData1)
-                            .then((res)=>{
-                                localStorage.setItem("todayIsRecite",1)
-                            })
+                            localStorage.setItem("todayIsRecite",1)
+                            // let postData1 = qs.stringify({
+                            //     userId: localStorage.getItem("userId")
+                            // })
+                            // this.$axios.post("/user/setTodayIsRecite",postData1)
+                            // .then((res)=>{
+                            //     localStorage.setItem("todayIsRecite",1)
+                            // })
                         }    
                     })
                     .catch((err)=>{
@@ -204,8 +205,7 @@ export default {
         },
 
         forget(){
-            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){
-                this.showMore=false
+            if(this.start=="true"&&Number(localStorage.getItem("todayIsRecite"))==0){    
                 this.display=false
                 if(this.index<this.datas.length){
                     let postData = qs.stringify({
@@ -222,26 +222,28 @@ export default {
                             this.exampleSentence=this.datas[this.index].exampleSentence
                             this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
                             localStorage.setItem("index",this.index)
+                            this.$axios.post("/word/setReciteTime",postData)
+                            .then((res)=>{
+                            })
                         }else{
                             this.index--
                             Toast({
                                 position:'bottom',
                                 message:'背完啦'
                             });
-                            let postData1 = qs.stringify({
-                                userId: localStorage.getItem("userId")
-                            })
-                            this.$axios.post("/user/setTodayIsRecite",postData1)
-                            .then((res)=>{
-                                localStorage.setItem("todayIsRecite",1)
-                            })
-                        }
-                        
+                            localStorage.setItem("todayIsRecite",1)
+                            // let postData1 = qs.stringify({
+                            //     userId: localStorage.getItem("userId")
+                            // })
+                            // this.$axios.post("/user/setTodayIsRecite",postData1)
+                            // .then((res)=>{
+                            //     localStorage.setItem("todayIsRecite",1)
+                            // })
+                        }  
                     })
                     .catch((err)=>{
                         console.log(err)
-                    });
-                    
+                    });          
                 }
             }else{
                 if(Number(localStorage.getItem("todayIsRecite"))==1){
@@ -255,8 +257,7 @@ export default {
                         message:'你已经点击过了'
                     });
                 }
-            }
-            
+            }   
         }
     }
 }

@@ -10,7 +10,7 @@
                         <input type="text" id='field-range-input' v-model="wordNum">
                     </div>
                     <div style="margin-left:121px;">
-                        <input type="range" id='field-range' v-model="wordNum" min="0" max="100" />
+                        <input type="range" id='field-range' v-model="wordNum" min="100" max="300" />
                     </div>
                 </div>   
             </div>

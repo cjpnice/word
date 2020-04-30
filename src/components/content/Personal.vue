@@ -43,8 +43,12 @@ import { Toast } from 'mint-ui';
 export default {
 	data(){
 		return{
-			userName:localStorage.getItem("userName")
+			userName:localStorage.getItem("userName"),
+			subtitle:''
 		}
+	},
+	created(){
+	
 	},
 	methods: {
 		logOut(){
