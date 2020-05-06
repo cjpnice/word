@@ -43,7 +43,7 @@
 					认识
 		</button>
     </div>
-    <mt-button class="buttom" size="large" type="primary" @click.native="startReciteWord">开始学习</mt-button>            
+    <mt-button class="buttom" size="large" type="primary" @click.native="startReciteWord" v-show="showStart">开始学习</mt-button>            
   </div>
 </template>
 
@@ -63,6 +63,7 @@ export default {
             datas:{},
             index:0,
             start:"false",
+            showStart:true,
             wordNum:0,
             audio:""
         }
@@ -78,7 +79,12 @@ export default {
             this.phonogram=this.datas[this.index].phonogram
             this.exampleSentence=this.datas[this.index].exampleSentence
             this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
+            this.showStart=false
         }
+        if(Number(localStorage.getItem("todayIsRecite"))==1){
+            this.showStart=true
+        }
+
     },
     computed:{
         'progress':function(){
@@ -118,6 +124,7 @@ export default {
                         this.phonogram=this.datas[this.index].phonogram
                         this.exampleSentence=this.datas[this.index].exampleSentence
                         this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
+                        this.showStart=false
                     }
                     
                 })
@@ -154,6 +161,12 @@ export default {
                     id: this.datas[this.index].id,
                     userId: localStorage.getItem("userId")
                     })
+                    this.$axios.post("/word/setReciteTime",postData)
+                    .then((res)=>{
+                        console.log(this.word)
+                    }).catch((err)=>{
+                        console.log(err)
+                    });  
                     this.$axios.post("/word/setIsRemember",postData)
                     .then((res)=>{
                         this.index++
@@ -164,10 +177,7 @@ export default {
                             this.phonogram=this.datas[this.index].phonogram
                             this.exampleSentence=this.datas[this.index].exampleSentence
                             this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
-                            localStorage.setItem("index",this.index)
-                            this.$axios.post("/word/setReciteTime",postData)
-                            .then((res)=>{
-                            })
+                            localStorage.setItem("index",this.index) 
                         }else{
                             //背完了
                             this.index--
@@ -176,13 +186,7 @@ export default {
                                 message:'背完啦'
                             });
                             localStorage.setItem("todayIsRecite",1)
-                            // let postData1 = qs.stringify({
-                            //     userId: localStorage.getItem("userId")
-                            // })
-                            // this.$axios.post("/user/setTodayIsRecite",postData1)
-                            // .then((res)=>{
-                            //     localStorage.setItem("todayIsRecite",1)
-                            // })
+                            this.showStart=true
                         }    
                     })
                     .catch((err)=>{
@@ -195,6 +199,7 @@ export default {
                         position:'bottom',
                         message:'你今天已经背过了'
                     });
+
                 }else{
                     Toast({
                         position:'bottom',
@@ -212,6 +217,12 @@ export default {
                     id: this.datas[this.index].id,
                     userId: localStorage.getItem("userId")
                     })
+                    this.$axios.post("/word/setReciteTime",postData)
+                    .then((res)=>{
+                        console.log(this.word)
+                    }).catch((err)=>{
+                        console.log(err)
+                    });   
                     this.$axios.post("/word/setForgetTime",postData)
                     .then((res)=>{
                         this.index++
@@ -222,9 +233,6 @@ export default {
                             this.exampleSentence=this.datas[this.index].exampleSentence
                             this.audio="http://dict.youdao.com/dictvoice?audio="+this.word
                             localStorage.setItem("index",this.index)
-                            this.$axios.post("/word/setReciteTime",postData)
-                            .then((res)=>{
-                            })
                         }else{
                             this.index--
                             Toast({
@@ -232,13 +240,7 @@ export default {
                                 message:'背完啦'
                             });
                             localStorage.setItem("todayIsRecite",1)
-                            // let postData1 = qs.stringify({
-                            //     userId: localStorage.getItem("userId")
-                            // })
-                            // this.$axios.post("/user/setTodayIsRecite",postData1)
-                            // .then((res)=>{
-                            //     localStorage.setItem("todayIsRecite",1)
-                            // })
+                            this.showStart=true
                         }  
                     })
                     .catch((err)=>{

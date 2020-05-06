@@ -16,6 +16,12 @@ spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
+  process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+  });
+  
+  
   webpack(webpackConfig, (err, stats) => {
     spinner.stop()
     if (err) throw err
